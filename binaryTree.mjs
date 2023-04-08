@@ -46,6 +46,8 @@ console.log(
     util.inspect(tree, { showHidden: false, depth: null, colors: true })
 );
 
+function IterativeDepthTraversal(tree) {}
+
 function RecursiveDepthTraversal(tree) {
     // DLR - Data, left, right
     function TraversePreorder(tree, result = []) {
