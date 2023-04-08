@@ -1,4 +1,5 @@
 import util from "util";
+import Queue from "./queue.mjs";
 
 class Node {
     value;
@@ -99,4 +100,27 @@ function RecursiveDepthTraversal(tree) {
     console.log(TraversePostorder(tree));
 }
 
+function IterativeBreadthTraversal(tree) {
+    const queue = new Queue();
+    const result = [];
+
+    queue.enqueue(tree);
+
+    while (!queue.empty) {
+        const node = queue.dequeue();
+
+        result.push(node.value);
+
+        if (node.left !== null) {
+            queue.enqueue(node.left);
+        }
+        if (node.right !== null) {
+            queue.enqueue(node.right);
+        }
+    }
+
+    console.log(result);
+}
+
 RecursiveDepthTraversal(tree);
+IterativeBreadthTraversal(tree);
