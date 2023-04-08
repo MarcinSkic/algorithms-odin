@@ -104,6 +104,32 @@ export default class LinkedList {
 
         return result;
     }
+
+    insertAt(value, index) {
+        if (index > this.size - 1) return undefined;
+        let node = this.head;
+
+        while (index !== 1) {
+            node = node.next;
+            index--;
+        }
+
+        const newNode = new Node(value);
+        newNode.next = node.next;
+        node.next = newNode;
+    }
+
+    removeAt(index) {
+        if (index > this.size - 1) return undefined;
+        let node = this.head;
+
+        while (index !== 1) {
+            node = node.next;
+            index--;
+        }
+
+        node.next = node.next.next;
+    }
 }
 
 class Node {
@@ -119,20 +145,22 @@ const list = new LinkedList();
 list.append(5).append(21);
 list.prepend(-1);
 
-console.log(
-    util.inspect(list, { showHidden: false, depth: null, colors: true })
-);
-console.log(list.size);
-console.log(list.at(1));
+console.log(list.toString());
+console.log({ size: list.size });
+console.log({ "at(1)": list.at(1) });
+console.log({ "find(21)": list.find(21) });
+console.log({ "contains(21)": list.contains(21) });
 
-console.log(list.find(21));
-
-list.pop();
-
-console.log(
-    util.inspect(list, { showHidden: false, depth: null, colors: true })
-);
+console.log({ popped: list.pop() });
 
 console.log(list.toString());
 
-console.log(list.contains(-12));
+console.log({ "contains(-12)": list.contains(-12) });
+
+list.append(124).append(675).append(32).append(74).append(534);
+console.log(list.toString());
+
+list.removeAt(2);
+console.log(list.toString());
+list.insertAt(666, 4);
+console.log(list.toString());
