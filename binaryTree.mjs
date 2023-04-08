@@ -1,5 +1,6 @@
 import util from "util";
 import Queue from "./queue.mjs";
+import { StackObject } from "./stack.mjs";
 
 class Node {
     value;
@@ -46,9 +47,34 @@ console.log(
     util.inspect(tree, { showHidden: false, depth: null, colors: true })
 );
 
-function IterativeDepthTraversal(tree) {}
+function IterativeDepthTraversal() {
+    function TraverseInorder(tree) {
+        const stack = new StackObject();
+        const result = [];
 
-function RecursiveDepthTraversal(tree) {
+        stack.push(tree);
+
+        while (stack.top !== null) {
+            if (stack.top.left !== null) {
+                stack.push(stack.top.left);
+                continue;
+            }
+
+            const node = stack.pop();
+            result.push(node.value);
+
+            if (node.right !== null) {
+                stack.push(node.right);
+            }
+        }
+
+        console.log(result);
+    }
+
+    TraverseInorder(tree);
+}
+
+function RecursiveDepthTraversal() {
     // DLR - Data, left, right
     function TraversePreorder(tree, result = []) {
         result.push(tree.value);

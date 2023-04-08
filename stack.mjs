@@ -1,4 +1,4 @@
-class StackObject {
+export class StackObject {
     top = null;
 
     push(value) {
@@ -15,7 +15,7 @@ class StackObject {
     }
 }
 
-class StackArray {
+export class StackArray {
     stack = [];
 
     push(value) {
