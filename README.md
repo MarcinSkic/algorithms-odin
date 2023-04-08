@@ -1,11 +1,15 @@
 # Recursion
 
-Repository for learning usage of recursion, with JavaScript
+Repository for learning usage of recursion and algorithms, with JavaScript
 
 ## Exercises
 
 -   Collatz Conjecture
--   [From JS Interview Prep](https://www.codingame.com/playgrounds/5422/js-interview-prep-recursion)
+-   [JS Interview Prep](https://www.codingame.com/playgrounds/5422/js-interview-prep-recursion)
+-   Fibonacci
+-   MergeSort
+-   Binary Search
+-   Binary Tree and its traversals
 
 ---
 
