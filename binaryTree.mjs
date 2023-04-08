@@ -1,5 +1,3 @@
-//DLR Traversal:
-//F, D, B, A, C, E, J, G, I, H, K
 import util from "util";
 
 class Node {
@@ -46,3 +44,59 @@ tree.addValue("D")
 console.log(
     util.inspect(tree, { showHidden: false, depth: null, colors: true })
 );
+
+function RecursiveDepthTraversal(tree) {
+    // DLR - Data, left, right
+    function TraversePreorder(tree, result = []) {
+        result.push(tree.value);
+
+        if (tree.left !== null) {
+            TraversePreorder(tree.left, result);
+        }
+
+        if (tree.right !== null) {
+            TraversePreorder(tree.right, result);
+        }
+
+        return result;
+    }
+
+    function TraverseInorder(tree, result = []) {
+        if (tree.left !== null) {
+            TraverseInorder(tree.left, result);
+        }
+
+        result.push(tree.value);
+
+        if (tree.right !== null) {
+            TraverseInorder(tree.right, result);
+        }
+
+        return result;
+    }
+
+    function TraversePostorder(tree, result = []) {
+        if (tree.left !== null) {
+            TraversePostorder(tree.left, result);
+        }
+
+        if (tree.right !== null) {
+            TraversePostorder(tree.right, result);
+        }
+
+        result.push(tree.value);
+
+        return result;
+    }
+
+    //F, D, B, A, C, E, J, G, I, H, K
+    console.log(TraversePreorder(tree));
+
+    //A, B, C, D, E, F, G, H, I, J, K
+    console.log(TraverseInorder(tree));
+
+    //A, C, B, E, D, H, I, G, K, J, F
+    console.log(TraversePostorder(tree));
+}
+
+RecursiveDepthTraversal(tree);
