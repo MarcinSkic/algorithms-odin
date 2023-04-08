@@ -5,6 +5,10 @@ let array1 = [
 
 let array2 = [5, 2, 1, 3, 6, 4];
 
+// DISCLAIMER: Yes I know it is super inefficient,
+// (array.shift for almost every element, yikes!)
+// but I just wanted to capture idea with readability in mind
+
 function mergeSort(array) {
     console.log(array);
     if (array.length === 1) {
@@ -26,4 +30,4 @@ function mergeSort(array) {
     return [...resultArray, ...left, ...right];
 }
 
-console.log(mergeSort(array2));
+console.log(mergeSort(array1));
