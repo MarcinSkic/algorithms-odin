@@ -10,12 +10,11 @@ export default class Queue {
 
         if (this.front === null) {
             this.front = node;
-            this.back = node;
         } else {
             this.back.next = node;
-            this.back = node;
         }
 
+        this.back = node;
         this.empty = false;
         return this;
     }
