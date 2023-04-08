@@ -52,23 +52,46 @@ function IterativeDepthTraversal() {
         const stack = new StackObject();
         const result = [];
 
-        stack.push(tree);
+        stack.push({
+            node: tree,
+            leftFinished: !tree.left,
+            valueAdded: false,
+            rightFinished: !tree.right,
+        });
+
+        console.log(stack);
 
         while (stack.top !== null) {
-            if (stack.top.left !== null) {
-                stack.push(stack.top.left);
+            let top = stack.pop();
+
+            if (!top.leftFinished) {
+                top.leftFinished = true;
+                stack.push(top);
+                stack.push(getNodeAdapter(top.node.left));
                 continue;
             }
 
-            const node = stack.pop();
-            result.push(node.value);
+            if (!top.valueAdded) {
+                top.valueAdded = true;
+                result.push(top.node.value);
+            }
 
-            if (node.right !== null) {
-                stack.push(node.right);
+            if (!top.rightFinished) {
+                top.rightFinished = true;
+                stack.push(getNodeAdapter(top.node.right));
             }
         }
 
-        console.log(result);
+        console.log({ iterativeDepth: result });
+    }
+
+    function getNodeAdapter(node) {
+        return {
+            node,
+            leftFinished: !node.left,
+            valueAdded: false,
+            rightFinished: !node.right,
+        };
     }
 
     TraverseInorder(tree);
@@ -150,5 +173,6 @@ function IterativeBreadthTraversal(tree) {
     console.log(result);
 }
 
+IterativeDepthTraversal();
 RecursiveDepthTraversal(tree);
 IterativeBreadthTraversal(tree);
