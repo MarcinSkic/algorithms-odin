@@ -1,6 +1,6 @@
 import util from "util";
-import Queue from "./queue.mjs";
-import { StackObject } from "./stack.mjs";
+import Queue from "./queue.js";
+import { StackObject } from "./stack.js";
 
 class Node {
     value;
