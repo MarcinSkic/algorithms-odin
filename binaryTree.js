@@ -1,4 +1,3 @@
-import util from "util";
 import Queue from "./queue.js";
 import { StackObject } from "./stack.js";
 
@@ -30,33 +29,57 @@ class Node {
     }
 }
 
-const tree = new Node("F");
+const Tree = (array = []) => {
+    let root = buildTree(array);
 
-tree.addValue("D")
-    .addValue("E")
-    .addValue("B")
-    .addValue("A")
-    .addValue("C")
-    .addValue("J")
-    .addValue("K")
-    .addValue("G")
-    .addValue("I")
-    .addValue("H");
+    const getRoot = () => {
+        return root;
+    };
 
-console.log(
-    util.inspect(tree, { showHidden: false, depth: null, colors: true })
-);
+    const addValue = (value) => {
+        if (root === null) {
+            root = new Node(value);
+        } else {
+            root.addValue(value);
+        }
+        return this;
+    };
 
-function IterativeDepthTraversal() {
-    function TraverseInorder(tree) {
+    function buildTree(array = []) {
+        if (array.length === 0) {
+            return null;
+        }
+
+        if (array.length === 1) {
+            return new Node(array[0]);
+        }
+
+        let tree = new Node(array[Math.floor(array.length / 2)]);
+
+        tree.left = buildTree(array.slice(0, Math.floor(array.length / 2)));
+        tree.right = buildTree(array.slice(Math.floor(array.length / 2) + 1));
+
+        return tree;
+    }
+
+    function inorder_iterative() {
+        function getNodeAdapter(node) {
+            return {
+                node,
+                leftFinished: !node.left,
+                valueAdded: false,
+                rightFinished: !node.right,
+            };
+        }
+
         const stack = new StackObject();
         const result = [];
 
         stack.push({
-            node: tree,
-            leftFinished: !tree.left,
+            node: root,
+            leftFinished: !root.left,
             valueAdded: false,
-            rightFinished: !tree.right,
+            rightFinished: !root.right,
         });
 
         console.log(stack);
@@ -85,94 +108,102 @@ function IterativeDepthTraversal() {
         console.log({ iterativeDepth: result });
     }
 
-    function getNodeAdapter(node) {
-        return {
-            node,
-            leftFinished: !node.left,
-            valueAdded: false,
-            rightFinished: !node.right,
-        };
-    }
-
-    TraverseInorder(tree);
-}
-
-function RecursiveDepthTraversal() {
     // DLR - Data, left, right
-    function TraversePreorder(tree, result = []) {
-        result.push(tree.value);
+    function preorder(root, result = []) {
+        result.push(root.value);
 
-        if (tree.left !== null) {
-            TraversePreorder(tree.left, result);
+        if (root.left !== null) {
+            preorder(root.left, result);
         }
 
-        if (tree.right !== null) {
-            TraversePreorder(tree.right, result);
-        }
-
-        return result;
-    }
-
-    function TraverseInorder(tree, result = []) {
-        if (tree.left !== null) {
-            TraverseInorder(tree.left, result);
-        }
-
-        result.push(tree.value);
-
-        if (tree.right !== null) {
-            TraverseInorder(tree.right, result);
+        if (root.right !== null) {
+            preorder(root.right, result);
         }
 
         return result;
     }
 
-    function TraversePostorder(tree, result = []) {
+    function inorder(tree, result = []) {
         if (tree.left !== null) {
-            TraversePostorder(tree.left, result);
-        }
-
-        if (tree.right !== null) {
-            TraversePostorder(tree.right, result);
+            inorder(tree.left, result);
         }
 
         result.push(tree.value);
 
+        if (tree.right !== null) {
+            inorder(tree.right, result);
+        }
+
         return result;
     }
 
-    //F, D, B, A, C, E, J, G, I, H, K
-    console.log(TraversePreorder(tree));
+    function postorder(result = []) {
+        if (root.left !== null) {
+            postorder(root.left, result);
+        }
 
-    //A, B, C, D, E, F, G, H, I, J, K
-    console.log(TraverseInorder(tree));
+        if (root.right !== null) {
+            postorder(root.right, result);
+        }
 
-    //A, C, B, E, D, H, I, G, K, J, F
-    console.log(TraversePostorder(tree));
-}
+        result.push(root.value);
 
-function IterativeBreadthTraversal(tree) {
-    const queue = new Queue();
-    const result = [];
+        return result;
+    }
 
-    queue.enqueue(tree);
+    function levelOrder_iterative() {
+        const queue = new Queue();
+        const result = [];
 
-    while (!queue.empty) {
-        const node = queue.dequeue();
+        queue.enqueue(root);
 
-        result.push(node.value);
+        while (!queue.empty) {
+            const node = queue.dequeue();
 
-        if (node.left !== null) {
-            queue.enqueue(node.left);
+            result.push(node.value);
+
+            if (node.left !== null) {
+                queue.enqueue(node.left);
+            }
+            if (node.right !== null) {
+                queue.enqueue(node.right);
+            }
+        }
+
+        console.log(result);
+    }
+
+    const prettyPrint = (node, prefix = "", isLeft = true) => {
+        if (node === null) {
+            return;
         }
         if (node.right !== null) {
-            queue.enqueue(node.right);
+            prettyPrint(
+                node.right,
+                `${prefix}${isLeft ? "│   " : "    "}`,
+                false
+            );
         }
-    }
+        console.log(`${prefix}${isLeft ? "└── " : "┌── "}${node.value}`);
+        if (node.left !== null) {
+            prettyPrint(
+                node.left,
+                `${prefix}${isLeft ? "    " : "│   "}`,
+                true
+            );
+        }
+    };
 
-    console.log(result);
-}
+    return {
+        getRoot,
+        addValue,
+        inorder_iterative,
+        inorder,
+        postorder,
+        preorder,
+        levelOrder_iterative,
+        prettyPrint,
+    };
+};
 
-IterativeDepthTraversal();
-RecursiveDepthTraversal(tree);
-IterativeBreadthTraversal(tree);
+export default Tree;
