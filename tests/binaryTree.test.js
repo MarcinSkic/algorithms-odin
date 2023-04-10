@@ -122,7 +122,7 @@ describe("Tree", () => {
         });
     });
 
-    describe("duplicates", () => {
-        it.todo("ignores when trying to add");
+    describe("'Tie it all together' test", () => {
+        it.todo("final test");
     });
 });
