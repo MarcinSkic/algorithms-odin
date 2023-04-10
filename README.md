@@ -1,4 +1,4 @@
-# Recursion
+# Algorithms
 
 Repository for learning usage of recursion and algorithms, with JavaScript
 
