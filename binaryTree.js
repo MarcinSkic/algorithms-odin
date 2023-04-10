@@ -1,5 +1,7 @@
 import Queue from "./queue.js";
 import { StackObject } from "./stack.js";
+import mergeSort from "./mergeSort.js";
+import removeDuplicates from "./removeDuplicates.js";
 
 class Node {
     value;
@@ -10,18 +12,22 @@ class Node {
         this.value = value;
     }
 
-    addValue(newValue) {
+    insert(newValue) {
+        if (newValue === this.value) {
+            return;
+        }
+
         if (newValue < this.value) {
             if (this.left === null) {
                 this.left = new Node(newValue);
             } else {
-                this.left.addValue(newValue);
+                this.left.insert(newValue);
             }
         } else {
             if (this.right === null) {
                 this.right = new Node(newValue);
             } else {
-                this.right.addValue(newValue);
+                this.right.insert(newValue);
             }
         }
 
@@ -30,20 +36,20 @@ class Node {
 }
 
 const Tree = (array = []) => {
-    let root = buildTree(array);
+    let root = buildTree(removeDuplicates(mergeSort(array)));
 
     const getRoot = () => {
         return root;
     };
 
-    const addValue = (value) => {
+    function insert(value) {
         if (root === null) {
             root = new Node(value);
         } else {
-            root.addValue(value);
+            root.insert(value);
         }
         return this;
-    };
+    }
 
     function buildTree(array = []) {
         if (array.length === 0) {
@@ -108,47 +114,111 @@ const Tree = (array = []) => {
         console.log({ iterativeDepth: result });
     }
 
-    // DLR - Data, left, right
-    function preorder(root, result = []) {
-        result.push(root.value);
-
-        if (root.left !== null) {
-            preorder(root.left, result);
+    function deleteNode(value) {
+        function reconnectLeftNode(newParent, node) {
+            if (newParent.left !== null) {
+                reconnectLeftNode(newParent.left, node);
+            } else {
+                newParent.left = node;
+            }
         }
 
-        if (root.right !== null) {
-            preorder(root.right, result);
+        function internal(node, value) {
+            if (node.value === value) {
+                return { left: node.left, right: node.right };
+            }
+
+            let result;
+
+            if (node.left !== null) {
+                result = internal(node.left, value);
+                if (result) {
+                    if (result.right !== null) {
+                        reconnectLeftNode(result.right, result.left);
+                        node.left = result.right;
+                    } else {
+                        node.left = result.left;
+                    }
+                }
+            }
+
+            if (node.right !== null) {
+                result = internal(node.right, value);
+                if (result) {
+                    if (result.right !== null) {
+                        reconnectLeftNode(result.right, result.left);
+                        node.right = result.right;
+                    } else {
+                        node.right = result.left;
+                    }
+                }
+            }
         }
 
-        return result;
+        let rootResult = internal(root, value);
+
+        if (rootResult) {
+            if (rootResult.right !== null) {
+                reconnectLeftNode(rootResult.right, rootResult.left);
+                root = rootResult.right;
+            } else {
+                root = rootResult.left;
+            }
+        }
     }
 
-    function inorder(tree, result = []) {
-        if (tree.left !== null) {
-            inorder(tree.left, result);
+    function preorder() {
+        function internal(node, result = []) {
+            result.push(node.value);
+
+            if (node.left !== null) {
+                internal(node.left, result);
+            }
+
+            if (node.right !== null) {
+                internal(node.right, result);
+            }
+
+            return result;
         }
 
-        result.push(tree.value);
-
-        if (tree.right !== null) {
-            inorder(tree.right, result);
-        }
-
-        return result;
+        return internal(root);
     }
 
-    function postorder(result = []) {
-        if (root.left !== null) {
-            postorder(root.left, result);
+    function inorder() {
+        function internal(node, result = []) {
+            if (node.left !== null) {
+                internal(node.left, result);
+            }
+
+            result.push(node.value);
+
+            if (node.right !== null) {
+                internal(node.right, result);
+            }
+
+            return result;
         }
 
-        if (root.right !== null) {
-            postorder(root.right, result);
+        return internal(root);
+    }
+
+    function postorder() {
+        function internal(node, result = []) {
+            if (node.left !== null) {
+                internal(node.left, result);
+            }
+
+            if (node.right !== null) {
+                internal(node.right, result);
+            }
+
+            result.push(node.value);
+
+            return result;
         }
 
-        result.push(root.value);
-
-        return result;
+        return internal(root);
     }
 
     function levelOrder_iterative() {
@@ -173,30 +243,35 @@ const Tree = (array = []) => {
         console.log(result);
     }
 
-    const prettyPrint = (node, prefix = "", isLeft = true) => {
-        if (node === null) {
-            return;
+    const prettyPrint = () => {
+        function internal(node, prefix = "", isLeft = true) {
+            if (node === null) {
+                return;
+            }
+            if (node.right !== null) {
+                internal(
+                    node.right,
+                    `${prefix}${isLeft ? "│   " : "    "}`,
+                    false
+                );
+            }
+            console.log(`${prefix}${isLeft ? "└── " : "┌── "}${node.value}`);
+            if (node.left !== null) {
+                internal(
+                    node.left,
+                    `${prefix}${isLeft ? "    " : "│   "}`,
+                    true
+                );
+            }
         }
-        if (node.right !== null) {
-            prettyPrint(
-                node.right,
-                `${prefix}${isLeft ? "│   " : "    "}`,
-                false
-            );
-        }
-        console.log(`${prefix}${isLeft ? "└── " : "┌── "}${node.value}`);
-        if (node.left !== null) {
-            prettyPrint(
-                node.left,
-                `${prefix}${isLeft ? "    " : "│   "}`,
-                true
-            );
-        }
+
+        internal(root);
     };
 
     return {
         getRoot,
-        addValue,
+        insert,
+        deleteNode,
         inorder_iterative,
         inorder,
         postorder,
@@ -205,5 +280,7 @@ const Tree = (array = []) => {
         prettyPrint,
     };
 };
+
+const tree = Tree([1, 2, 3, 4, 5, 6, 7, 8]);
 
 export default Tree;
