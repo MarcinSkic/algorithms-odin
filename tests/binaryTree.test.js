@@ -208,6 +208,30 @@ describe("Tree", () => {
         });
     });
 
+    describe("height", () => {
+        it("one node tree has 0 height", () => {
+            const tree = Tree([1]);
+
+            expect(tree.height(tree.getRoot())).toBe(0);
+        });
+        it("works on one line tree", () => {
+            const tree = Tree();
+            tree.insert(25).insert(24).insert(3).insert(8).insert(7);
+
+            expect(tree.height(tree.getRoot())).toBe(4);
+        });
+
+        it("works on balanced tree", () => {
+            const tree = Tree([1, 2, 3, 4, 5, 6, 7, 8]);
+            expect(tree.height(tree.getRoot())).toBe(3);
+        });
+
+        it("works on inner node", () => {
+            const tree = Tree([1, 2, 3, 4, 5, 6, 7, 8]);
+            expect(tree.height(tree.getRoot().right)).toBe(1);
+        });
+    });
+
     describe("'Tie it all together' test", () => {
         it.todo("final test");
     });

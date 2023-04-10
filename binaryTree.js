@@ -285,6 +285,20 @@ const Tree = (array = []) => {
         return internal(root);
     }
 
+    function height(node) {
+        let leftHeight = -1,
+            rightHeight = -1;
+        if (node.left !== null) {
+            leftHeight = height(node.left);
+        }
+
+        if (node.right !== null) {
+            rightHeight = height(node.right);
+        }
+
+        return 1 + Math.max(leftHeight, rightHeight);
+    }
+
     const prettyPrint = () => {
         function internal(node, prefix = "", isLeft = true) {
             if (node === null) {
@@ -320,10 +334,13 @@ const Tree = (array = []) => {
         postorder,
         preorder,
         levelOrder_iterative,
+        height,
         prettyPrint,
     };
 };
 
-const tree = Tree([1, 2, 3, 4, 5, 6, 7, 8]);
+const tree = Tree();
+tree.insert(25).insert(24).insert(3).insert(8).insert(7);
+tree.prettyPrint();
 
 export default Tree;
