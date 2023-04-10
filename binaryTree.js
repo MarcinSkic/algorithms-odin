@@ -33,6 +33,10 @@ class Node {
 
         return this;
     }
+
+    isLeaf() {
+        return !Boolean(this.right || this.left);
+    }
 }
 
 const Tree = (array = []) => {
@@ -286,6 +290,10 @@ const Tree = (array = []) => {
     }
 
     function height(node) {
+        if (!node) {
+            return -1;
+        }
+
         let leftHeight = -1,
             rightHeight = -1;
         if (node.left !== null) {
@@ -297,6 +305,54 @@ const Tree = (array = []) => {
         }
 
         return 1 + Math.max(leftHeight, rightHeight);
+    }
+
+    function depth(node) {
+        function internal(node, targetNode) {
+            if (targetNode.value === node.value) {
+                return 0;
+            }
+
+            if (node.left !== null) {
+                const value = internal(node.left, targetNode);
+                if (value !== false) {
+                    return value + 1;
+                }
+            }
+
+            if (node.right !== null) {
+                const value = internal(node.right, targetNode);
+                if (value !== false) {
+                    return value + 1;
+                }
+            }
+
+            return false;
+        }
+
+        return internal(root, node);
+    }
+
+    function isBalanced() {
+        function internal(node) {
+            if (node === null) {
+                return -1;
+            }
+
+            const leftHeight = internal(node.left);
+            const rightHeight = internal(node.right);
+
+            if (leftHeight === false || rightHeight === false) return false;
+            if (Math.abs(leftHeight - rightHeight) > 1) return false;
+
+            return height(node);
+        }
+
+        return internal(root);
+    }
+
+    function rebalance() {
+        root = buildTree(inorder());
     }
 
     const prettyPrint = () => {
@@ -335,12 +391,33 @@ const Tree = (array = []) => {
         preorder,
         levelOrder_iterative,
         height,
+        depth,
+        isBalanced,
+        rebalance,
         prettyPrint,
     };
 };
 
-const tree = Tree();
-tree.insert(25).insert(24).insert(3).insert(8).insert(7);
-tree.prettyPrint();
+function tieItAllTogether() {
+    const tree = Tree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
+    tree.prettyPrint();
+    console.log(tree.levelOrder_iterative());
+    console.log(tree.preorder());
+    console.log(tree.postorder());
+    console.log(tree.inorder());
+
+    for (let i = 0; i < 200; i++) {
+        tree.insert(Math.floor((Math.random() * 1000) % 1000));
+    }
+
+    tree.prettyPrint();
+
+    tree.rebalance();
+
+    tree.prettyPrint();
+    console.log(tree.preorder());
+    console.log(tree.postorder());
+    console.log(tree.inorder());
+}
 
 export default Tree;

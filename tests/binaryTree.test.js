@@ -209,6 +209,10 @@ describe("Tree", () => {
     });
 
     describe("height", () => {
+        it("null node has -1 height", () => {
+            const tree = Tree([1]);
+            expect(tree.height(null)).toBe(-1);
+        });
         it("one node tree has 0 height", () => {
             const tree = Tree([1]);
 
@@ -232,7 +236,95 @@ describe("Tree", () => {
         });
     });
 
+    describe("depth", () => {
+        it("root depth should be 0", () => {
+            const tree = Tree([1, 2, 3, 4, 5, 6, 7, 8]);
+            expect(tree.depth(tree.getRoot())).toBe(0);
+        });
+
+        it("works one level deep", () => {
+            const tree = Tree([1, 2, 3, 4, 5, 6, 7, 8]);
+            expect(tree.depth(tree.getRoot().left)).toBe(1);
+        });
+
+        it("works many levels deep", () => {
+            const tree = Tree([1, 2, 3, 4, 5, 6, 7, 8]);
+            expect(tree.depth(tree.getRoot().left.right)).toBe(2);
+            expect(tree.depth(tree.getRoot().left.left.left)).toBe(3);
+        });
+    });
+
+    describe("isBalanced", () => {
+        it("happy path", () => {
+            const tree = Tree([1, 2, 3, 4, 5, 6, 7, 8]);
+            expect(tree.isBalanced()).toBeTruthy();
+        });
+
+        it("unbalanced gives false", () => {
+            const tree = Tree();
+            tree.insert(25).insert(24).insert(3).insert(8).insert(7);
+            expect(tree.isBalanced()).toBeFalsy();
+        });
+
+        it("works on almost balanced", () => {
+            const tree = Tree([1, 2, 3, 4, 5, 6, 7, 8]);
+            tree.insert(-1);
+
+            expect(tree.isBalanced()).toBeFalsy();
+        });
+    });
+
+    describe("isLeaf", () => {
+        it("works on leaf", () => {
+            const tree = Tree([1, 2, 3, 4, 5, 6, 7, 8]);
+            expect(tree.find(1).isLeaf()).toBeTruthy();
+        });
+
+        it("works on inner node with left and right node", () => {
+            const tree = Tree([1, 2, 3, 4, 5, 6, 7, 8]);
+            expect(tree.find(5).isLeaf()).toBeFalsy();
+        });
+
+        it("works on inner node with one child node", () => {
+            const tree = Tree([1, 2, 3, 4, 5, 6, 7, 8]);
+            expect(tree.find(2).isLeaf()).toBeFalsy();
+        });
+    });
+
+    describe("rebalance", () => {
+        it("doesn't alter content of tree", () => {
+            const sortedArray = [1, 2, 3, 4, 5, 6, 7, 8];
+            const tree = Tree(sortedArray);
+            tree.rebalance();
+            expect(tree.inorder()).toEqual(sortedArray);
+        });
+
+        it("rebalances tree", () => {
+            const tree = Tree();
+            tree.insert(25).insert(24).insert(3).insert(8).insert(7);
+            expect(tree.isBalanced()).toBeFalsy();
+            tree.rebalance();
+            expect(tree.isBalanced()).toBeTruthy();
+        });
+    });
+
     describe("'Tie it all together' test", () => {
-        it.todo("final test");
+        it("final test", () => {
+            const tree = Tree([
+                1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324,
+            ]);
+
+            expect(tree.isBalanced()).toBeTruthy();
+
+            for (let i = 0; i < 200; i++) {
+                tree.insert(Math.floor((Math.random() * 1000) % 1000));
+            }
+
+            expect(tree.isBalanced()).toBeFalsy();
+
+            tree.rebalance();
+
+            expect(tree.isBalanced()).toBeTruthy();
+        });
     });
 });
