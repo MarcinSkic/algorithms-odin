@@ -167,70 +167,44 @@ const Tree = (array = []) => {
         }
     }
 
-    function preorder() {
-        function internal(node, result = []) {
-            result.push(node.value);
+    function find(value) {
+        function internal(node, value) {
+            if (node.value === value) {
+                return node;
+            }
 
+            let foundNode = null;
             if (node.left !== null) {
-                internal(node.left, result);
+                foundNode = internal(node.left, value);
+                if (foundNode) {
+                    return foundNode;
+                }
             }
 
             if (node.right !== null) {
-                internal(node.right, result);
+                foundNode = internal(node.right, value);
             }
 
-            return result;
+            return foundNode;
         }
 
-        return internal(root);
+        return internal(root, value);
     }
 
-    function inorder() {
-        function internal(node, result = []) {
-            if (node.left !== null) {
-                internal(node.left, result);
-            }
-
-            result.push(node.value);
-
-            if (node.right !== null) {
-                internal(node.right, result);
-            }
-
-            return result;
-        }
-
-        return internal(root);
-    }
-
-    function postorder() {
-        function internal(node, result = []) {
-            if (node.left !== null) {
-                internal(node.left, result);
-            }
-
-            if (node.right !== null) {
-                internal(node.right, result);
-            }
-
-            result.push(node.value);
-
-            return result;
-        }
-
-        return internal(root);
-    }
-
-    function levelOrder_iterative() {
+    function levelOrder_iterative(callback) {
         const queue = new Queue();
-        const result = [];
+        const result = !callback ? [] : null;
 
         queue.enqueue(root);
 
         while (!queue.empty) {
             const node = queue.dequeue();
 
-            result.push(node.value);
+            if (callback) {
+                callback(node);
+            } else {
+                result.push(node.value);
+            }
 
             if (node.left !== null) {
                 queue.enqueue(node.left);
@@ -240,7 +214,75 @@ const Tree = (array = []) => {
             }
         }
 
-        console.log(result);
+        return result;
+    }
+
+    function preorder(callback) {
+        function internal(node) {
+            let result = [];
+
+            if (callback) {
+                callback(node);
+            } else {
+                result = [node.value];
+            }
+
+            if (node.left !== null) {
+                result = [...result, ...internal(node.left)];
+            }
+
+            if (node.right !== null) {
+                result = [...result, ...internal(node.right)];
+            }
+
+            return result;
+        }
+
+        return internal(root);
+    }
+
+    function inorder(callback) {
+        function internal(node, result = []) {
+            if (node.left !== null) {
+                internal(node.left, result);
+            }
+
+            if (callback) {
+                callback(node);
+            } else {
+                result.push(node.value);
+            }
+
+            if (node.right !== null) {
+                internal(node.right, result);
+            }
+
+            return result;
+        }
+
+        return internal(root);
+    }
+
+    function postorder(callback) {
+        function internal(node, result = []) {
+            if (node.left !== null) {
+                internal(node.left, result);
+            }
+
+            if (node.right !== null) {
+                internal(node.right, result);
+            }
+
+            if (callback) {
+                callback(node);
+            } else {
+                result.push(node.value);
+            }
+
+            return result;
+        }
+
+        return internal(root);
     }
 
     const prettyPrint = () => {
@@ -272,6 +314,7 @@ const Tree = (array = []) => {
         getRoot,
         insert,
         deleteNode,
+        find,
         inorder_iterative,
         inorder,
         postorder,

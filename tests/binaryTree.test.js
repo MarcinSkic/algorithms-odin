@@ -101,24 +101,110 @@ describe("Tree", () => {
         });
     });
 
+    describe("find", () => {
+        it("works on left leaf", () => {
+            const tree = Tree([1, 2, 3, 4, 5, 6, 7, 8]);
+            expect(tree.find(1).value).toEqual(1);
+        });
+
+        it("works on right leaf", () => {
+            const tree = Tree([1, 2, 3, 4, 5, 6, 7, 8]);
+            expect(tree.find(8).value).toEqual(8);
+        });
+
+        it("works on mixed directions", () => {
+            const tree = Tree([1, 2, 3, 4, 5, 6, 7, 8]);
+            expect(tree.find(4).value).toEqual(4);
+        });
+
+        it("works on root", () => {
+            const tree = Tree([1, 2, 3, 4, 5, 6, 7, 8]);
+            expect(tree.find(5).value).toEqual(5);
+        });
+    });
+
     describe("traversals", () => {
-        it("empty preorder returns values array", () => {
-            const tree = Tree([1, 2, 3, 4, 5, 6, 7]);
+        describe("levelOrder_iterative", () => {
+            it("without callback returns values array", () => {
+                const tree = Tree([1, 2, 3, 4, 5, 6, 7, 8]);
 
-            expect(tree.preorder()).toEqual([4, 2, 1, 3, 6, 5, 7]);
+                expect(tree.levelOrder_iterative()).toEqual([
+                    5, 3, 7, 2, 4, 6, 8, 1,
+                ]);
+            });
+
+            it("with callback, calls it for every element", () => {
+                let sum = 0;
+                const tree = Tree([1, 2, 3, 4, 5, 6, 7, 8]);
+                const callback = jest.fn((element) => {
+                    sum += element.value;
+                });
+
+                tree.levelOrder_iterative(callback);
+                expect(callback).toHaveBeenCalledTimes(8);
+                expect(sum).toEqual(36);
+            });
         });
 
-        it("empty inorder returns values array", () => {
-            const sortedArray = [1, 2, 3, 4, 5, 6, 7];
-            const tree = Tree(sortedArray);
+        describe("preorder", () => {
+            it("empty returns values array", () => {
+                const tree = Tree([1, 2, 3, 4, 5, 6, 7]);
 
-            expect(tree.inorder()).toEqual(sortedArray);
+                expect(tree.preorder()).toEqual([4, 2, 1, 3, 6, 5, 7]);
+            });
+
+            it("with callback, calls it for every element", () => {
+                let sum = 0;
+                const tree = Tree([1, 2, 3, 4, 5, 6, 7, 8]);
+                const callback = jest.fn((element) => {
+                    sum += element.value;
+                });
+
+                tree.preorder(callback);
+                expect(callback).toHaveBeenCalledTimes(8);
+                expect(sum).toEqual(36);
+            });
         });
 
-        it("empty postorder returns values array", () => {
-            const tree = Tree([1, 2, 3, 4, 5, 6, 7]);
+        describe("inorder", () => {
+            it("empty returns values array", () => {
+                const sortedArray = [1, 2, 3, 4, 5, 6, 7];
+                const tree = Tree(sortedArray);
 
-            expect(tree.postorder()).toEqual([1, 3, 2, 5, 7, 6, 4]);
+                expect(tree.inorder()).toEqual(sortedArray);
+            });
+
+            it("with callback, calls it for every element", () => {
+                let sum = 0;
+                const tree = Tree([1, 2, 3, 4, 5, 6, 7, 8]);
+                const callback = jest.fn((element) => {
+                    sum += element.value;
+                });
+
+                tree.inorder(callback);
+                expect(callback).toHaveBeenCalledTimes(8);
+                expect(sum).toEqual(36);
+            });
+        });
+
+        describe("postorder", () => {
+            it("empty returns values array", () => {
+                const tree = Tree([1, 2, 3, 4, 5, 6, 7]);
+
+                expect(tree.postorder()).toEqual([1, 3, 2, 5, 7, 6, 4]);
+            });
+
+            it("with callback, calls it for every element", () => {
+                let sum = 0;
+                const tree = Tree([1, 2, 3, 4, 5, 6, 7, 8]);
+                const callback = jest.fn((element) => {
+                    sum += element.value;
+                });
+
+                tree.postorder(callback);
+                expect(callback).toHaveBeenCalledTimes(8);
+                expect(sum).toEqual(36);
+            });
         });
     });
 
